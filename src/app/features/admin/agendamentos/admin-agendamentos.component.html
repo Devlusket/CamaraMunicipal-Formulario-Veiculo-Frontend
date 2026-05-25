@@ -58,12 +58,32 @@
 
     </div>
 
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <!-- Footer filtros -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-      <span class="text-xs text-gray-400">
-        {{ agendamentosFiltrados().length }} registro(s) encontrado(s)
-      </span>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
 
+        <span class="text-xs text-gray-400">
+          {{ agendamentosFiltrados().length }} registro(s) encontrado(s)
+        </span>
+
+        <!-- Mostrar cancelados -->
+        <label class="flex items-center gap-2 text-xs text-gray-600 cursor-pointer select-none">
+
+          <input
+            type="checkbox"
+            [checked]="mostrarCancelados()"
+            (change)="mostrarCancelados.set($any($event.target).checked)"
+            class="rounded border-gray-300 text-primary-700 focus:ring-primary-500"
+          />
+
+          Mostrar cancelados
+
+        </label>
+
+      </div>
+
+      <!-- Limpar -->
       <button
         (click)="limparFiltros()"
         class="w-full sm:w-auto text-xs text-primary-600 hover:text-primary-800 font-medium transition-colors text-left sm:text-right"

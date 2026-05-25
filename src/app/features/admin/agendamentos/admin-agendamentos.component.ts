@@ -17,6 +17,7 @@ export class AdminAgendamentosComponent implements OnInit {
   loading = signal(false);
   filtroStatus = signal<StatusAgendamento | ''>('');
   filtroVeiculo = signal('');
+  mostrarCancelados = signal(false);
 
   agendamentosFiltrados = computed(() => {
     let lista = this.agendamentos();
@@ -29,6 +30,10 @@ export class AdminAgendamentosComponent implements OnInit {
       lista = lista.filter(a =>
         a.veiculoNome.toLowerCase().includes(this.filtroVeiculo().toLowerCase())
       );
+    }
+
+    if (!this.mostrarCancelados()) {
+      lista = lista.filter(a => a.status === 'ATIVO');
     }
 
     return lista;
@@ -67,5 +72,6 @@ carregarAgendamentos(): void {
   limparFiltros(): void {
     this.filtroStatus.set('');
     this.filtroVeiculo.set('');
+    this.mostrarCancelados.set(false);
   }
 }
