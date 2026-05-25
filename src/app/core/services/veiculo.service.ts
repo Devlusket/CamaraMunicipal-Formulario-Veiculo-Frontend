@@ -10,7 +10,7 @@ export class VeiculoService {
   private base = `${environment.apiUrl}/api`; 
 
   getVeiculosAtivos(): Observable<VeiculoResponseDTO[]> {
-    return this.http.get<VeiculoResponseDTO[]>(`${this.base}/veiculos/ativos`);
+    return this.http.get<VeiculoResponseDTO[]>(`${this.base}/veiculos`);
   }
 
   getAllVeiculos(): Observable<VeiculoResponseDTO[]> {
