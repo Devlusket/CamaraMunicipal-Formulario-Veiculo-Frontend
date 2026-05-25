@@ -28,6 +28,8 @@ export class AgendamentoComponent implements OnInit {
   loadingVerificar = signal(false);
   loadingConfirmar = signal(false);
   loadingFuturos = signal(false);
+  servidorAcordando = signal(false);
+  private coldStartTimer: any;
   // modalVisivel = signal(false);
   // agendamentoParaCancelar = signal<number | null>(null);
 
@@ -39,12 +41,34 @@ export class AgendamentoComponent implements OnInit {
     dataFim:      ['', Validators.required],
   });
 
+
+
+
+
   ngOnInit(): void {
-    this.veiculoService.getVeiculosAtivos().subscribe({
-      next: (v) => this.veiculos.set(v),
-      error: () => this.toastService.show('Erro ao carregar veículos.', 'error'),
-    });
-  }
+  this.coldStartTimer = setTimeout(() => {
+    if (this.veiculos().length === 0) {
+      this.servidorAcordando.set(true);
+    }
+  }, 5000);
+
+  this.veiculoService.getVeiculosAtivos().subscribe({
+    next: (v) => {
+      this.veiculos.set(v);
+      this.servidorAcordando.set(false);
+      clearTimeout(this.coldStartTimer);
+    },
+    error: () => {
+      this.servidorAcordando.set(false);
+      clearTimeout(this.coldStartTimer);
+      this.toastService.show('Erro ao carregar veículos.', 'error');
+    },
+  });
+}
+
+
+
+
 
   verificarDisponibilidade(): void {
     const { veiculoId, dataInicio, dataFim } = this.form.value;
