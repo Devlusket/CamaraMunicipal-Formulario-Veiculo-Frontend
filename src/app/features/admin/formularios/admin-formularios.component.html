@@ -2,16 +2,31 @@
 
   <!-- Header -->
   <div>
-    <h1 class="text-2xl font-bold text-gray-800">Formulários</h1>
-    <p class="text-sm text-gray-500 mt-1">Histórico de registros de uso dos veículos.</p>
+    <h1 class="text-2xl font-bold text-gray-800">
+      Formulários
+    </h1>
+
+    <p class="text-sm text-gray-500 mt-1">
+      Histórico de registros de uso dos veículos.
+    </p>
   </div>
 
   <!-- Filtros -->
-  <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-4">
-    <h2 class="text-sm font-semibold text-gray-700">Filtros</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+  <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 flex flex-col gap-4">
+
+    <h2 class="text-sm font-semibold text-gray-700">
+      Filtros
+    </h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+
+      <!-- Veículo -->
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-medium text-gray-500">Veículo</label>
+
+        <label class="text-xs font-medium text-gray-500">
+          Veículo
+        </label>
+
         <input
           type="text"
           [ngModel]="filtroVeiculo()"
@@ -19,113 +34,386 @@
           placeholder="Buscar por veículo"
           class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
         />
+
       </div>
+
+      <!-- Data início -->
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-medium text-gray-500">Data de saída — início</label>
+
+        <label class="text-xs font-medium text-gray-500">
+          Data de saída — início
+        </label>
+
         <input
           type="datetime-local"
           [ngModel]="filtroDataInicio()"
           (ngModelChange)="filtroDataInicio.set($event)"
           class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
         />
+
       </div>
+
+      <!-- Data fim -->
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-medium text-gray-500">Data de saída — fim</label>
+
+        <label class="text-xs font-medium text-gray-500">
+          Data de saída — fim
+        </label>
+
         <input
           type="datetime-local"
           [ngModel]="filtroDataFim()"
           (ngModelChange)="filtroDataFim.set($event)"
           class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
         />
+
       </div>
+
     </div>
-    <div class="flex items-center justify-between">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+
       <span class="text-xs text-gray-400">
         {{ formulariosFiltrados().length }} registro(s) encontrado(s)
       </span>
+
       <button
         (click)="limparFiltros()"
-        class="text-xs text-primary-600 hover:text-primary-800 font-medium transition-colors"
+        class="text-xs text-primary-600 hover:text-primary-800 font-medium transition-colors self-start sm:self-auto"
       >
         Limpar filtros
       </button>
+
     </div>
+
   </div>
 
-  <!-- Tabela -->
+  <!-- Lista / Tabela -->
   <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+
     @if (loading()) {
+
       <div class="flex justify-center py-12">
         <span class="w-6 h-6 border-2 border-primary-200 border-t-primary-700 rounded-full animate-spin"></span>
       </div>
+
     } @else if (formulariosFiltrados().length === 0) {
-      <p class="text-sm text-gray-400 text-center py-12">Nenhum formulário encontrado.</p>
+
+      <p class="text-sm text-gray-400 text-center py-12">
+        Nenhum formulário encontrado.
+      </p>
+
     } @else {
-      <div class="overflow-x-auto">
+
+      <!-- Desktop -->
+      <div class="hidden lg:block overflow-x-auto">
+
         <table class="w-full text-sm">
+
           <thead class="bg-gray-50 border-b border-gray-200">
+
             <tr>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Requisitante</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Veículo</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Saída</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Retorno Previsto</th>
-              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Odômetro</th>
-              <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Detalhes</th>
+
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Requisitante
+              </th>
+
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Veículo
+              </th>
+
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Saída
+              </th>
+
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Retorno Previsto
+              </th>
+
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Odômetro
+              </th>
+
+              <th class="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Detalhes
+              </th>
+
             </tr>
+
           </thead>
+
           <tbody class="divide-y divide-gray-100">
+
             @for (formulario of formulariosFiltrados(); track formulario.id) {
+
               <tr class="hover:bg-gray-50 transition-colors">
+
+                <!-- Requisitante -->
                 <td class="px-6 py-4">
-                  <p class="font-medium text-gray-800">{{ formulario.requisitante }}</p>
-                  <p class="text-xs text-gray-400">{{ formulario.cargo }}</p>
+
+                  <p class="font-medium text-gray-800">
+                    {{ formulario.requisitante }}
+                  </p>
+
+                  <p class="text-xs text-gray-400">
+                    {{ formulario.cargo }}
+                  </p>
+
                 </td>
-                <td class="px-6 py-4 text-gray-600">{{ formulario.veiculoNome }}</td>
-                <td class="px-6 py-4 text-gray-600">{{ formulario.dataSaida | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td class="px-6 py-4 text-gray-600">{{ formulario.dataRetornoPrevista | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td class="px-6 py-4 text-gray-600">{{ formulario.odometroSaida }} km</td>
+
+                <!-- Veículo -->
+                <td class="px-6 py-4 text-gray-600">
+                  {{ formulario.veiculoNome }}
+                </td>
+
+                <!-- Saída -->
+                <td class="px-6 py-4 text-gray-600">
+                  {{ formulario.dataSaida | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+
+                <!-- Retorno -->
+                <td class="px-6 py-4 text-gray-600">
+                  {{ formulario.dataRetornoPrevista | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+
+                <!-- Odômetro -->
+                <td class="px-6 py-4 text-gray-600">
+                  {{ formulario.odometroSaida }} km
+                </td>
+
+                <!-- Botão -->
                 <td class="px-6 py-4 text-right">
+
                   <button
                     (click)="toggleDetalhe(formulario.id)"
                     class="text-xs text-primary-600 hover:text-primary-800 font-medium transition-colors"
                   >
                     {{ detalheVisivel() === formulario.id ? 'Fechar' : 'Ver mais' }}
                   </button>
+
                 </td>
+
               </tr>
 
-              <!-- Linha de detalhes expansível -->
+              <!-- Linha expansível -->
               @if (detalheVisivel() === formulario.id) {
+
                 <tr class="bg-primary-50">
+
                   <td colspan="6" class="px-6 py-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
                       <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Itinerário</p>
-                        <p class="text-gray-700">{{ formulario.itinerario }}</p>
+
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                          Itinerário
+                        </p>
+
+                        <p class="text-gray-700 wrap-break-word">
+                          {{ formulario.itinerario }}
+                        </p>
+
                       </div>
+
                       <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Justificativa</p>
-                        <p class="text-gray-700">{{ formulario.justificativa }}</p>
+
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                          Justificativa
+                        </p>
+
+                        <p class="text-gray-700 wrap-break-word">
+                          {{ formulario.justificativa }}
+                        </p>
+
                       </div>
+
                       @if (formulario.observacao) {
-                        <div class="sm:col-span-2">
-                          <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Observação</p>
-                          <p class="text-gray-700">{{ formulario.observacao }}</p>
+
+                        <div class="md:col-span-2">
+
+                          <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                            Observação
+                          </p>
+
+                          <p class="text-gray-700 wrap-break-word">
+                            {{ formulario.observacao }}
+                          </p>
+
                         </div>
+
                       }
+
                       <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Registrado em</p>
-                        <p class="text-gray-700">{{ formulario.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+
+                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                          Registrado em
+                        </p>
+
+                        <p class="text-gray-700">
+                          {{ formulario.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                        </p>
+
                       </div>
+
                     </div>
+
                   </td>
+
                 </tr>
+
               }
+
             }
+
           </tbody>
+
         </table>
+
       </div>
+
+      <!-- Mobile -->
+      <div class="lg:hidden flex flex-col divide-y divide-gray-100">
+
+        @for (formulario of formulariosFiltrados(); track formulario.id) {
+
+          <div class="p-4 flex flex-col gap-4">
+
+            <!-- Topo -->
+            <div class="flex flex-col gap-1">
+
+              <h3 class="font-semibold text-gray-800 text-sm">
+                {{ formulario.requisitante }}
+              </h3>
+
+              <span class="text-xs text-gray-400">
+                {{ formulario.cargo }}
+              </span>
+
+            </div>
+
+            <!-- Infos -->
+            <div class="grid grid-cols-1 gap-3 text-sm">
+
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                  Veículo
+                </p>
+
+                <p class="text-gray-700">
+                  {{ formulario.veiculoNome }}
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                  Saída
+                </p>
+
+                <p class="text-gray-700">
+                  {{ formulario.dataSaida | date:'dd/MM/yyyy HH:mm' }}
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                  Retorno Previsto
+                </p>
+
+                <p class="text-gray-700">
+                  {{ formulario.dataRetornoPrevista | date:'dd/MM/yyyy HH:mm' }}
+                </p>
+              </div>
+
+              <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                  Odômetro
+                </p>
+
+                <p class="text-gray-700">
+                  {{ formulario.odometroSaida }} km
+                </p>
+              </div>
+
+            </div>
+
+            <!-- Botão -->
+            <button
+              (click)="toggleDetalhe(formulario.id)"
+              class="w-full py-2 rounded-lg border border-primary-200 text-primary-700 text-sm font-medium hover:bg-primary-50 transition-colors"
+            >
+              {{ detalheVisivel() === formulario.id ? 'Fechar detalhes' : 'Ver detalhes' }}
+            </button>
+
+            <!-- Detalhes -->
+            @if (detalheVisivel() === formulario.id) {
+
+              <div class="rounded-xl bg-primary-50 border border-primary-100 p-4 flex flex-col gap-4 text-sm">
+
+                <div>
+
+                  <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                    Itinerário
+                  </p>
+
+                  <p class="text-gray-700 wrap-break-word">
+                    {{ formulario.itinerario }}
+                  </p>
+
+                </div>
+
+                <div>
+
+                  <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                    Justificativa
+                  </p>
+
+                  <p class="text-gray-700 wrap-break-word">
+                    {{ formulario.justificativa }}
+                  </p>
+
+                </div>
+
+                @if (formulario.observacao) {
+
+                  <div>
+
+                    <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                      Observação
+                    </p>
+
+                    <p class="text-gray-700 wrap-break-word">
+                      {{ formulario.observacao }}
+                    </p>
+
+                  </div>
+
+                }
+
+                <div>
+
+                  <p class="text-xs font-semibold text-gray-500 uppercase mb-1">
+                    Registrado em
+                  </p>
+
+                  <p class="text-gray-700">
+                    {{ formulario.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                  </p>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
     }
+
   </div>
 
 </div>
