@@ -15,7 +15,7 @@ export interface FormularioResponseDTO {
   requisitante: string;
   cargo: string;
   veiculoId: number;
-  nomeVeiculo: string;
+  veiculoNome: string;
   dataSaida: string;
   dataRetornoPrevista: string;
   itinerario: string;

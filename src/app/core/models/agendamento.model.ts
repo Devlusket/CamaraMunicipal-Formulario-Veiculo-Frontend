@@ -13,7 +13,7 @@ export interface AgendamentoResponseDTO {
   requisitante: string;
   cargo: string;
   veiculoId: number;
-  nomeVeiculo: string;
+  veiculoNome: string;
   dataInicio: string;
   dataFim: string;
   status: StatusAgendamento;

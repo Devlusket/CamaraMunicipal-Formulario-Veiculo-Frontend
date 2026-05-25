@@ -25,7 +25,7 @@ export class AdminFormulariosComponent implements OnInit {
 
     if (this.filtroVeiculo()) {
       lista = lista.filter(f =>
-        f.nomeVeiculo.toLowerCase().includes(this.filtroVeiculo().toLowerCase())
+        f.veiculoNome.toLowerCase().includes(this.filtroVeiculo().toLowerCase())
       );
     }
 

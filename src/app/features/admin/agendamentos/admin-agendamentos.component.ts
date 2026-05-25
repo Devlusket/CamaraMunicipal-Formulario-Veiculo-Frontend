@@ -27,7 +27,7 @@ export class AdminAgendamentosComponent implements OnInit {
 
     if (this.filtroVeiculo()) {
       lista = lista.filter(a =>
-        a.nomeVeiculo.toLowerCase().includes(this.filtroVeiculo().toLowerCase())
+        a.veiculoNome.toLowerCase().includes(this.filtroVeiculo().toLowerCase())
       );
     }
 
