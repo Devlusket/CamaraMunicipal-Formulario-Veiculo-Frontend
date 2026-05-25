@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -9,13 +9,15 @@ import { AuthService } from '../../../core/services/auth.service';
   imports: [ReactiveFormsModule],
   templateUrl: './admin-login.component.html',
 })
-export class AdminLoginComponent {
+export class AdminLoginComponent implements OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   loading = signal(false);
   erro = signal('');
+  coldStart = signal(false);
+  private coldStartTimer: any;
 
   form = this.fb.group({
     username: ['', Validators.required],
@@ -27,6 +29,14 @@ export class AdminLoginComponent {
 
     this.loading.set(true);
     this.erro.set('');
+    this.coldStart.set(false);
+
+    // Após 5s sem resposta, avisa sobre o cold start
+    this.coldStartTimer = setTimeout(() => {
+      if (this.loading()) {
+        this.coldStart.set(true);
+      }
+    }, 5000);
 
     const { username, password } = this.form.value;
     this.authService.login({ username: username!, password: password! }).subscribe({
@@ -38,6 +48,14 @@ export class AdminLoginComponent {
             : 'Erro ao conectar. Tente novamente.'
         );
       },
-    }).add(() => this.loading.set(false));
+    }).add(() => {
+      this.loading.set(false);
+      this.coldStart.set(false);
+      clearTimeout(this.coldStartTimer);
+    });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.coldStartTimer);
   }
 }
