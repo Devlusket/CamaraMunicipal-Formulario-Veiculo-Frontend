@@ -28,7 +28,7 @@ export class AdminDashboardComponent implements OnInit {
       this.totalVeiculosAtivos.set(v.filter(x => x.ativo).length)
     );
 
-    this.agendamentoService.getAgendamentosFuturos().subscribe(a =>
+    this.agendamentoService.getAllAgendamentos().subscribe(a =>
       this.totalAgendamentosFuturos.set(a.length)
     );
 
