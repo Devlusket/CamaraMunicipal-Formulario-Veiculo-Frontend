@@ -1,0 +1,96 @@
+<div class="flex flex-col gap-6">
+
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-bold text-gray-800">Agendamentos</h1>
+    <p class="text-sm text-gray-500 mt-1">Histórico completo de agendamentos incluindo cancelados.</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-4">
+    <h2 class="text-sm font-semibold text-gray-700">Filtros</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-medium text-gray-500">Veículo</label>
+        <input
+          type="text"
+          [ngModel]="filtroVeiculo()"
+          (ngModelChange)="filtroVeiculo.set($event)"
+          placeholder="Buscar por veículo"
+          class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs font-medium text-gray-500">Status</label>
+        <select
+          [ngModel]="filtroStatus()"
+          (ngModelChange)="filtroStatus.set($event)"
+          class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 bg-white"
+        >
+          <option value="">Todos</option>
+          <option value="ATIVO">Ativo</option>
+          <option value="CANCELADO">Cancelado</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-gray-400">
+        {{ agendamentosFiltrados().length }} registro(s) encontrado(s)
+      </span>
+      <button
+        (click)="limparFiltros()"
+        class="text-xs text-primary-600 hover:text-primary-800 font-medium transition-colors"
+      >
+        Limpar filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    @if (loading()) {
+      <div class="flex justify-center py-12">
+        <span class="w-6 h-6 border-2 border-primary-200 border-t-primary-700 rounded-full animate-spin"></span>
+      </div>
+    } @else if (agendamentosFiltrados().length === 0) {
+      <p class="text-sm text-gray-400 text-center py-12">Nenhum agendamento encontrado.</p>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Requisitante</th>
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Veículo</th>
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Início</th>
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Fim</th>
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+              <th class="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Registrado em</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @for (agendamento of agendamentosFiltrados(); track agendamento.id) {
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4">
+                  <p class="font-medium text-gray-800">{{ agendamento.requisitante }}</p>
+                  <p class="text-xs text-gray-400">{{ agendamento.cargo }}</p>
+                </td>
+                <td class="px-6 py-4 text-gray-600">{{ agendamento.nomeVeiculo }}</td>
+                <td class="px-6 py-4 text-gray-600">{{ agendamento.dataInicio | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="px-6 py-4 text-gray-600">{{ agendamento.dataFim | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="px-6 py-4">
+                  @if (agendamento.status === 'ATIVO') {
+                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Ativo</span>
+                  } @else {
+                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">Cancelado</span>
+                  }
+                </td>
+                <td class="px-6 py-4 text-gray-600">{{ agendamento.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+</div>
