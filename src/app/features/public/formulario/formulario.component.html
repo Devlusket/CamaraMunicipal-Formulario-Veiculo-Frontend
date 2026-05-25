@@ -1,0 +1,179 @@
+<app-navbar />
+
+<main class="min-h-screen bg-gray-50 py-10 px-4">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-800">Formulário de Uso de Veículo</h1>
+      <p class="text-sm text-gray-500 mt-1">Preencha os dados antes de retirar o veículo.</p>
+    </div>
+
+    <!-- Card do formulário -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
+
+        <!-- Requisitante + Cargo -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-sm font-medium text-gray-700">Requisitante <span class="text-red-500">*</span></label>
+            <input
+              formControlName="requisitante"
+              type="text"
+              placeholder="Nome completo"
+              class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              [class.border-red-400]="campoInvalido('requisitante')"
+              [class.border-gray-300]="!campoInvalido('requisitante')"
+            />
+            @if (campoInvalido('requisitante')) {
+              <span class="text-xs text-red-500">Campo obrigatório.</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-sm font-medium text-gray-700">Cargo <span class="text-red-500">*</span></label>
+            <input
+              formControlName="cargo"
+              type="text"
+              placeholder="Ex: Assessor, Vereador"
+              class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              [class.border-red-400]="campoInvalido('cargo')"
+              [class.border-gray-300]="!campoInvalido('cargo')"
+            />
+            @if (campoInvalido('cargo')) {
+              <span class="text-xs text-red-500">Campo obrigatório.</span>
+            }
+          </div>
+        </div>
+
+        <!-- Veículo -->
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-gray-700">Veículo <span class="text-red-500">*</span></label>
+          <select
+            formControlName="veiculoId"
+            class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100 bg-white"
+            [class.border-red-400]="campoInvalido('veiculoId')"
+            [class.border-gray-300]="!campoInvalido('veiculoId')"
+          >
+            <option [ngValue]="null" disabled>Selecione um veículo</option>
+            @for (veiculo of veiculos(); track veiculo.id) {
+              <option [ngValue]="veiculo.id">{{ veiculo.nome }} — {{ veiculo.placa }}</option>
+            }
+          </select>
+          @if (campoInvalido('veiculoId')) {
+            <span class="text-xs text-red-500">Selecione um veículo.</span>
+          }
+        </div>
+
+        <!-- Data Saída + Data Retorno -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-sm font-medium text-gray-700">Data/Hora de Saída <span class="text-red-500">*</span></label>
+            <input
+              formControlName="dataSaida"
+              type="datetime-local"
+              class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              [class.border-red-400]="campoInvalido('dataSaida')"
+              [class.border-gray-300]="!campoInvalido('dataSaida')"
+            />
+            @if (campoInvalido('dataSaida')) {
+              <span class="text-xs text-red-500">Campo obrigatório.</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-sm font-medium text-gray-700">Data/Hora de Retorno Prevista <span class="text-red-500">*</span></label>
+            <input
+              formControlName="dataRetornoPrevista"
+              type="datetime-local"
+              class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              [class.border-red-400]="campoInvalido('dataRetornoPrevista')"
+              [class.border-gray-300]="!campoInvalido('dataRetornoPrevista')"
+            />
+            @if (campoInvalido('dataRetornoPrevista')) {
+              <span class="text-xs text-red-500">Campo obrigatório.</span>
+            }
+          </div>
+        </div>
+
+        <!-- Itinerário -->
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-gray-700">Itinerário <span class="text-red-500">*</span></label>
+          <input
+            formControlName="itinerario"
+            type="text"
+            placeholder="Ex: Câmara → Prefeitura → Câmara"
+            class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+            [class.border-red-400]="campoInvalido('itinerario')"
+            [class.border-gray-300]="!campoInvalido('itinerario')"
+          />
+          @if (campoInvalido('itinerario')) {
+            <span class="text-xs text-red-500">Campo obrigatório.</span>
+          }
+        </div>
+
+        <!-- Justificativa -->
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-gray-700">Justificativa <span class="text-red-500">*</span></label>
+          <textarea
+            formControlName="justificativa"
+            rows="3"
+            placeholder="Descreva o motivo do uso do veículo"
+            class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100 resize-none"
+            [class.border-red-400]="campoInvalido('justificativa')"
+            [class.border-gray-300]="!campoInvalido('justificativa')"
+          ></textarea>
+          @if (campoInvalido('justificativa')) {
+            <span class="text-xs text-red-500">Campo obrigatório.</span>
+          }
+        </div>
+
+        <!-- Odômetro + Observação -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-sm font-medium text-gray-700">Odômetro de Saída (km) <span class="text-red-500">*</span></label>
+            <input
+              formControlName="odometroSaida"
+              type="number"
+              min="0"
+              placeholder="Ex: 45230"
+              class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+              [class.border-red-400]="campoInvalido('odometroSaida')"
+              [class.border-gray-300]="!campoInvalido('odometroSaida')"
+            />
+            @if (campoInvalido('odometroSaida')) {
+              <span class="text-xs text-red-500">Campo obrigatório.</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-sm font-medium text-gray-700">Observação <span class="text-gray-400 font-normal">(opcional)</span></label>
+            <input
+              formControlName="observacao"
+              type="text"
+              placeholder="Alguma observação adicional"
+              class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+            />
+          </div>
+        </div>
+
+        <!-- Botão submit -->
+        <div class="pt-2">
+          <button
+            type="submit"
+            [disabled]="loading()"
+            class="w-full py-3 rounded-xl bg-primary-700 text-white font-semibold text-sm hover:bg-primary-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            @if (loading()) {
+              <span class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+              Registrando...
+            } @else {
+              Registrar Saída
+            }
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</main>
