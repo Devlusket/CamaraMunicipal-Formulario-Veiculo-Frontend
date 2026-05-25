@@ -33,13 +33,36 @@ export class AdminAgendamentosComponent implements OnInit {
 
     return lista;
   });
+  toastService: any;
 
-  ngOnInit(): void {
-    this.loading.set(true);
-    this.agendamentoService.getAllAgendamentos().subscribe({
-      next: (a) => this.agendamentos.set(a),
-    }).add(() => this.loading.set(false));
+
+  cancelarAgendamento(id: number): void {
+  if (!confirm('Deseja cancelar este agendamento?')) {
+    return;
   }
+
+  this.agendamentoService.cancelAgendamento(id).subscribe({
+    next: () => {
+      this.toastService.show('Agendamento cancelado.', 'success');
+      this.carregarAgendamentos();
+    },
+    error: () => {
+      this.toastService.show('Erro ao cancelar.', 'error');
+    }
+  });
+}
+
+ ngOnInit(): void {
+  this.carregarAgendamentos();
+}
+
+carregarAgendamentos(): void {
+  this.loading.set(true);
+
+  this.agendamentoService.getAllAgendamentos().subscribe({
+    next: (a) => this.agendamentos.set(a),
+  }).add(() => this.loading.set(false));
+}
 
   limparFiltros(): void {
     this.filtroStatus.set('');

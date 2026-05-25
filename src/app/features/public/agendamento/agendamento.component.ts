@@ -12,7 +12,7 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-agendamento',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent, ConfirmModalComponent, DatePipe],
+  imports: [ReactiveFormsModule, NavbarComponent, DatePipe],
   templateUrl: './agendamento.component.html',
 })
 export class AgendamentoComponent implements OnInit {
@@ -28,8 +28,8 @@ export class AgendamentoComponent implements OnInit {
   loadingVerificar = signal(false);
   loadingConfirmar = signal(false);
   loadingFuturos = signal(false);
-  modalVisivel = signal(false);
-  agendamentoParaCancelar = signal<number | null>(null);
+  // modalVisivel = signal(false);
+  // agendamentoParaCancelar = signal<number | null>(null);
 
   form = this.fb.group({
     requisitante: ['', Validators.required],
@@ -116,25 +116,25 @@ export class AgendamentoComponent implements OnInit {
     .add(() => this.loadingFuturos.set(false));
 }
 
-  abrirModalCancelamento(id: number): void {
-    this.agendamentoParaCancelar.set(id);
-    this.modalVisivel.set(true);
-  }
+  // abrirModalCancelamento(id: number): void {
+  //   this.agendamentoParaCancelar.set(id);
+  //   this.modalVisivel.set(true);
+  // }
 
-  confirmarCancelamento(): void {
-    const id = this.agendamentoParaCancelar();
-    if (!id) return;
+  // confirmarCancelamento(): void {
+  //   const id = this.agendamentoParaCancelar();
+  //   if (!id) return;
 
-    this.agendamentoService.cancelAgendamento(id).subscribe({
-      next: () => {
-        this.toastService.show('Agendamento cancelado.', 'success');
-        this.carregarFuturos();
-      },
-      error: () => this.toastService.show('Erro ao cancelar agendamento.', 'error'),
-    });
+  //   this.agendamentoService.cancelAgendamento(id).subscribe({
+  //     next: () => {
+  //       this.toastService.show('Agendamento cancelado.', 'success');
+  //       this.carregarFuturos();
+  //     },
+  //     error: () => this.toastService.show('Erro ao cancelar agendamento.', 'error'),
+  //   });
 
-    this.modalVisivel.set(false);
-  }
+  //   this.modalVisivel.set(false);
+  // }
 
   campoInvalido(campo: string): boolean {
     const control = this.form.get(campo);

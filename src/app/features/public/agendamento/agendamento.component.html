@@ -238,13 +238,13 @@
 
                   </div>
 
-                  <button
+                  <!-- <button
                     type="button"
                     (click)="abrirModalCancelamento(agendamento.id)"
                     class="shrink-0 px-3 py-1.5 rounded-lg border border-red-300 text-red-600 text-xs font-medium hover:bg-red-50 transition-colors"
                   >
                     Cancelar
-                  </button>
+                  </button> -->
 
                 </div>
 
@@ -264,10 +264,10 @@
 </main>
 
 <!-- Modal de confirmação de cancelamento -->
-<app-confirm-modal
+<!-- <app-confirm-modal
   [visivel]="modalVisivel()"
   titulo="Cancelar Agendamento"
   mensagem="Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita."
   (confirmado)="confirmarCancelamento()"
   (cancelado)="modalVisivel.set(false)"
-/>
+/> -->
