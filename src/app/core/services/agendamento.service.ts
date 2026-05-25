@@ -37,9 +37,18 @@ export class AgendamentoService {
     );
   }
 
-  getAgendamentosFuturos(): Observable<AgendamentoResponseDTO[]> {
-    return this.http.get<AgendamentoResponseDTO[]>(`${this.base}/agendamentos/futuros`);
-  }
+  getAgendamentosFuturos(
+  veiculoId: number
+): Observable<AgendamentoResponseDTO[]> {
+
+  const params = new HttpParams()
+    .set('veiculoId', veiculoId);
+
+  return this.http.get<AgendamentoResponseDTO[]>(
+    `${this.base}/agendamentos/futuros`,
+    { params }
+  );
+}
 
   getAllAgendamentos(): Observable<AgendamentoResponseDTO[]> {
     return this.http.get<AgendamentoResponseDTO[]>(`${this.base}/admin/agendamentos`);

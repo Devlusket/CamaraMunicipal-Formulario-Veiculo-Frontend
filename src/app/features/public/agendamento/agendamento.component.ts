@@ -91,12 +91,30 @@ export class AgendamentoComponent implements OnInit {
   }
 
   carregarFuturos(): void {
-    this.loadingFuturos.set(true);
-    this.agendamentoService.getAgendamentosFuturos().subscribe({
-      next: (a) => this.agendamentosFuturos.set(a),
-      error: () => this.toastService.show('Erro ao carregar agendamentos.', 'error'),
-    }).add(() => this.loadingFuturos.set(false));
+  const veiculoId = this.form.value.veiculoId;
+
+  if (!veiculoId) {
+    this.toastService.show(
+      'Selecione um veículo para visualizar os agendamentos.',
+      'warning'
+    );
+    return;
   }
+
+  this.loadingFuturos.set(true);
+
+  this.agendamentoService
+    .getAgendamentosFuturos(veiculoId)
+    .subscribe({
+      next: (a) => this.agendamentosFuturos.set(a),
+      error: () =>
+        this.toastService.show(
+          'Erro ao carregar agendamentos.',
+          'error'
+        ),
+    })
+    .add(() => this.loadingFuturos.set(false));
+}
 
   abrirModalCancelamento(id: number): void {
     this.agendamentoParaCancelar.set(id);
