@@ -1,0 +1,68 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+  <div class="w-full max-w-sm flex flex-col gap-6">
+
+    <!-- Logo + título -->
+    <div class="flex flex-col items-center gap-3 text-center">
+      <div class="w-16 h-16 rounded-full bg-primary-800 flex items-center justify-center text-white font-bold text-2xl shadow">
+        CM
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-gray-800">Câmara Municipal</h1>
+        <p class="text-sm text-gray-500">Controle de Veículos — Área Admin</p>
+      </div>
+    </div>
+
+    <!-- Card de login -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col gap-5">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-gray-700">Usuário</label>
+          <input
+            formControlName="username"
+            type="text"
+            placeholder="Digite seu usuário"
+            class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-gray-700">Senha</label>
+          <input
+            formControlName="password"
+            type="password"
+            placeholder="Digite sua senha"
+            class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+          />
+        </div>
+
+        <!-- Erro -->
+        @if (erro()) {
+          <div class="px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+            {{ erro() }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full py-3 rounded-xl bg-primary-700 text-white font-semibold text-sm hover:bg-primary-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          @if (loading()) {
+            <span class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+            Entrando...
+          } @else {
+            Entrar
+          }
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Rodapé -->
+    <p class="text-center text-xs text-gray-400">
+      Área restrita — Câmara Municipal
+    </p>
+
+  </div>
+</div>
