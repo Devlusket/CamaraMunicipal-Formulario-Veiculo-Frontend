@@ -20,6 +20,8 @@ export class FormularioComponent implements OnInit {
 
   veiculos = signal<VeiculoResponseDTO[]>([]);
   loading = signal(false);
+  servidorAcordando = signal(false);
+  private coldStartTimer: any;
 
   form = this.fb.group({
     requisitante:        ['', Validators.required],
@@ -34,11 +36,25 @@ export class FormularioComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.veiculoService.getVeiculosAtivos().subscribe({
-      next: (v) => this.veiculos.set(v),
-      error: () => this.toastService.show('Erro ao carregar veículos.', 'error'),
-    });
-  }
+  this.coldStartTimer = setTimeout(() => {
+    if (this.veiculos().length === 0) {
+      this.servidorAcordando.set(true);
+    }
+  }, 5000);
+
+  this.veiculoService.getVeiculosAtivos().subscribe({
+    next: (v) => {
+      this.veiculos.set(v);
+      this.servidorAcordando.set(false);
+      clearTimeout(this.coldStartTimer);
+    },
+    error: () => {
+      this.servidorAcordando.set(false);
+      clearTimeout(this.coldStartTimer);
+      this.toastService.show('Erro ao carregar veículos.', 'error');
+    },
+  });
+}
 
   onSubmit(): void {
     if (this.form.invalid) {
