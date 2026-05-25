@@ -5,11 +5,12 @@ import { FormularioService } from '../../../core/services/formulario.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { VeiculoResponseDTO } from '../../../core/models/veiculo.model';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent],
+  imports: [ReactiveFormsModule, NavbarComponent, FooterComponent],
   templateUrl: './formulario.component.html',
 })
 export class FormularioComponent implements OnInit {

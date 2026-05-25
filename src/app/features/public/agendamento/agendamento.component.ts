@@ -8,11 +8,12 @@ import { AgendamentoResponseDTO } from '../../../core/models/agendamento.model';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { DatePipe } from '@angular/common';
+import { FooterComponent } from "../../../shared/components/footer/footer.component";
 
 @Component({
   selector: 'app-agendamento',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent, DatePipe],
+  imports: [ReactiveFormsModule, NavbarComponent, DatePipe, FooterComponent],
   templateUrl: './agendamento.component.html',
 })
 export class AgendamentoComponent implements OnInit {
