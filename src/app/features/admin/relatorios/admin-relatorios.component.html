@@ -1,0 +1,93 @@
+<div class="flex flex-col gap-6">
+
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-bold text-gray-800">Relatórios</h1>
+    <p class="text-sm text-gray-500 mt-1">Gere relatórios em PDF dos formulários preenchidos.</p>
+  </div>
+
+  <!-- Card principal -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 md:p-8 max-w-xl flex flex-col gap-6">
+
+    <!-- Aviso informativo -->
+    <div class="flex gap-3 px-4 py-3 rounded-xl bg-blue-50 border border-blue-200 text-sm text-blue-700">
+      <span class="shrink-0 mt-0.5">ℹ️</span>
+      <p>O relatório inclui apenas formulários de uso já preenchidos. Agendamentos futuros não são incluídos.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="gerarPdf()" class="flex flex-col gap-5">
+
+      <!-- Veículo -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-gray-700">Veículo <span class="text-red-500">*</span></label>
+        <select
+          formControlName="veiculoId"
+          class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100 bg-white"
+          [class.border-red-400]="campoInvalido('veiculoId')"
+          [class.border-gray-300]="!campoInvalido('veiculoId')"
+        >
+          <option [ngValue]="null" disabled>Selecione um veículo</option>
+          @for (veiculo of veiculos(); track veiculo.id) {
+            <option [ngValue]="veiculo.id">{{ veiculo.nome }} — {{ veiculo.placa }}</option>
+          }
+        </select>
+        @if (campoInvalido('veiculoId')) {
+          <span class="text-xs text-red-500">Selecione um veículo.</span>
+        }
+      </div>
+
+      <!-- Ano + Mês -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-gray-700">Ano <span class="text-red-500">*</span></label>
+          <input
+            formControlName="ano"
+            type="number"
+            min="2000"
+            [max]="2100"
+            placeholder="Ex: 2025"
+            class="rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100"
+            [class.border-red-400]="campoInvalido('ano')"
+            [class.border-gray-300]="!campoInvalido('ano')"
+          />
+          @if (campoInvalido('ano')) {
+            <span class="text-xs text-red-500">Campo obrigatório.</span>
+          }
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-gray-700">
+            Mês <span class="text-gray-400 font-normal">(opcional)</span>
+          </label>
+          <select
+            formControlName="mes"
+            class="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-100 bg-white"
+          >
+            <option [ngValue]="null">Todos os meses</option>
+            @for (mes of meses; track mes.valor) {
+              <option [ngValue]="mes.valor">{{ mes.nome }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Botão -->
+      <div class="pt-2">
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full py-3 rounded-xl bg-primary-700 text-white font-semibold text-sm hover:bg-primary-800 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          @if (loading()) {
+            <span class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+            Gerando PDF...
+          } @else {
+            📄 Gerar e Baixar PDF
+          }
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
