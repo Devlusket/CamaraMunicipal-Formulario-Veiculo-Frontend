@@ -1,0 +1,40 @@
+@if (visivel) {
+  <!-- Overlay -->
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+    (click)="cancelado.emit()"
+  >
+    <!-- Card — stopPropagation evita fechar ao clicar dentro do card -->
+    <div
+      class="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6 flex flex-col gap-5"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Ícone + Título -->
+      <div class="flex flex-col items-center gap-2 text-center">
+        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+        </div>
+        <h3 class="text-base font-semibold text-gray-800">{{ titulo }}</h3>
+        <p class="text-sm text-gray-500">{{ mensagem }}</p>
+      </div>
+
+      <!-- Botões -->
+      <div class="flex gap-3">
+        <button
+          (click)="cancelado.emit()"
+          class="flex-1 px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          (click)="confirmado.emit()"
+          class="flex-1 px-4 py-2 rounded-lg bg-red-600 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+}
