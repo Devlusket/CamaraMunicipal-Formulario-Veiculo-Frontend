@@ -1,0 +1,34 @@
+<div class="flex flex-col gap-2">
+  <div class="flex items-center justify-between">
+    <label class="text-sm font-medium text-gray-700">
+      Assinatura <span class="text-gray-400 font-normal">(opcional)</span>
+    </label>
+    @if (!vazio) {
+      <button
+        type="button"
+        (click)="limpar()"
+        class="text-xs text-red-500 hover:text-red-700 transition-colors font-medium"
+      >
+        Limpar assinatura
+      </button>
+    }
+  </div>
+
+  <div class="relative rounded-xl border-2 border-dashed border-gray-300 bg-white overflow-hidden"
+       style="height: 140px;">
+    <canvas
+      #canvas
+      class="w-full h-full touch-none"
+    ></canvas>
+
+    @if (vazio) {
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <p class="text-sm text-gray-400">Assine aqui com o dedo ou mouse</p>
+      </div>
+    }
+  </div>
+
+  <p class="text-xs text-gray-400">
+    A assinatura será anexada ao registro e exibida no relatório PDF.
+  </p>
+</div>
