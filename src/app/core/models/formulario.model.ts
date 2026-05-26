@@ -8,6 +8,7 @@ export interface FormularioRequestDTO {
   justificativa: string;
   odometroSaida: number;
   observacao?: string;
+  assinatura: string;
 }
 
 export interface FormularioResponseDTO {
@@ -22,5 +23,6 @@ export interface FormularioResponseDTO {
   justificativa: string;
   odometroSaida: number;
   observacao?: string;
+  assinatura?: string | null;
   createdAt: string;
 }
