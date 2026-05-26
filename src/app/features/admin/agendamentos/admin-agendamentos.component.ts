@@ -36,7 +36,7 @@ export class AdminAgendamentosComponent implements OnInit {
       lista = lista.filter(a => a.status === 'ATIVO');
     }
 
-    return lista;
+    return lista.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   });
   toastService: any;
 

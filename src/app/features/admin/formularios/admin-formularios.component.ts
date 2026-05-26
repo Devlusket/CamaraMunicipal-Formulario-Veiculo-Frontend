@@ -37,7 +37,7 @@ export class AdminFormulariosComponent implements OnInit {
       lista = lista.filter(f => f.dataSaida <= this.filtroDataFim());
     }
 
-    return lista;
+    return lista.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   });
 
   ngOnInit(): void {
