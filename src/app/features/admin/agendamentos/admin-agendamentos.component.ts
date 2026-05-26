@@ -18,9 +18,11 @@ export class AdminAgendamentosComponent implements OnInit {
   filtroStatus = signal<StatusAgendamento | ''>('');
   filtroVeiculo = signal('');
   mostrarCancelados = signal(false);
+  mostrarExpirados = signal(false);
 
   agendamentosFiltrados = computed(() => {
     let lista = this.agendamentos();
+    const agora = new Date();
 
     if (this.filtroStatus()) {
       lista = lista.filter(a => a.status === this.filtroStatus());
@@ -35,6 +37,12 @@ export class AdminAgendamentosComponent implements OnInit {
     if (!this.mostrarCancelados()) {
       lista = lista.filter(a => a.status === 'ATIVO');
     }
+
+    if (!this.mostrarExpirados()) {
+    lista = lista.filter(a =>
+      !(a.status === 'ATIVO' && new Date(a.dataFim) < agora)
+    );
+  }
 
     return lista.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   });
@@ -73,5 +81,6 @@ carregarAgendamentos(): void {
     this.filtroStatus.set('');
     this.filtroVeiculo.set('');
     this.mostrarCancelados.set(false);
+    this.mostrarExpirados.set(false);
   }
 }
