@@ -6,8 +6,7 @@ import { ToastService } from '../../../core/services/toast.service';
 import { VeiculoResponseDTO } from '../../../core/models/veiculo.model';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
-import SignaturePad from 'signature_pad';
-import { SignaturePadComponent } from '../../../shared/components/signature-pad/signture-pad.component';
+import { SignaturePadComponent } from '../../../shared/components/signature-pad/signature-pad.component';
 
 @Component({
   selector: 'app-formulario',
