@@ -6,11 +6,13 @@ import { ToastService } from '../../../core/services/toast.service';
 import { VeiculoResponseDTO } from '../../../core/models/veiculo.model';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import SignaturePad from 'signature_pad';
+import { SignaturePadComponent } from '../../../shared/components/signature-pad/signture-pad.component';
 
 @Component({
   selector: 'app-formulario',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent, FooterComponent],
+  imports: [ReactiveFormsModule, NavbarComponent, FooterComponent, SignaturePadComponent],
   templateUrl: './formulario.component.html',
 })
 export class FormularioComponent implements OnInit {
@@ -22,6 +24,7 @@ export class FormularioComponent implements OnInit {
   veiculos = signal<VeiculoResponseDTO[]>([]);
   loading = signal(false);
   servidorAcordando = signal(false);
+  assinatura = signal<string | null>(null);
   private coldStartTimer: any;
 
   form = this.fb.group({
@@ -72,18 +75,22 @@ export class FormularioComponent implements OnInit {
 
     this.loading.set(true);
 
-    this.formularioService.submitFormulario(this.form.value as any).subscribe({
-      next: () => {
-        this.toastService.show('Formulário registrado com sucesso!', 'success');
-        this.form.reset();
-      },
-      error: (err) => {
-        const msg = err.status === 409
-          ? 'Veículo já está em uso ou agendado neste período.'
-          : err.error?.mensagem ?? 'Erro ao registrar formulário.';
-        this.toastService.show(msg, 'error');
-      },
-    }).add(() => this.loading.set(false));
+    this.formularioService.submitFormulario({
+  ...this.form.value as any,
+  assinatura: this.assinatura(),
+}).subscribe({
+  next: () => {
+    this.toastService.show('Formulário registrado com sucesso!', 'success');
+    this.form.reset();
+    this.assinatura.set(null);
+  },
+  error: (err) => {
+    const msg = err.status === 409
+      ? 'Veículo já está em uso ou agendado neste período.'
+      : err.error?.mensagem ?? 'Erro ao registrar formulário.';
+    this.toastService.show(msg, 'error');
+  },
+}).add(() => this.loading.set(false));
   }
 
   campoInvalido(campo: string): boolean {
