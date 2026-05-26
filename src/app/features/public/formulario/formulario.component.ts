@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { VeiculoService } from '../../../core/services/veiculo.service';
 import { FormularioService } from '../../../core/services/formulario.service';
@@ -25,6 +25,7 @@ export class FormularioComponent implements OnInit {
   servidorAcordando = signal(false);
   assinatura = signal<string | null>(null);
   private coldStartTimer: any;
+  @ViewChild(SignaturePadComponent) signaturePadRef!: SignaturePadComponent;
 
   form = this.fb.group({
     requisitante:        ['', Validators.required],
@@ -72,6 +73,11 @@ export class FormularioComponent implements OnInit {
       return;
     }
 
+    if (!this.assinatura()) {
+  this.toastService.show('A assinatura é obrigatória.', 'warning');
+  return;
+}
+
     this.loading.set(true);
 
     this.formularioService.submitFormulario({
@@ -82,6 +88,7 @@ export class FormularioComponent implements OnInit {
     this.toastService.show('Formulário registrado com sucesso!', 'success');
     this.form.reset();
     this.assinatura.set(null);
+    this.signaturePadRef.limpar();
   },
   error: (err) => {
     const msg = err.status === 409
