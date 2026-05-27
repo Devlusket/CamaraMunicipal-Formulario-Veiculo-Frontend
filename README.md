@@ -1,6 +1,6 @@
 # Câmara Municipal — Frontend de Controle de Veículos
 
-Interface web desenvolvida com Angular 21 para o sistema de gerenciamento de uso e agendamento dos veículos institucionais da câmara municipal. Funcionários registram o uso dos veículos e realizam agendamentos diretamente pelo navegador ou pelo app instalado via PWA, enquanto o admin tem acesso a um painel completo com histórico, gestão de veículos e geração de relatórios em PDF.
+Interface web desenvolvida com Angular 21 para o sistema de gerenciamento de uso e agendamento dos veículos institucionais da câmara municipal. Funcionários registram o uso dos veículos (com assinatura digital) e realizam agendamentos diretamente pelo navegador ou pelo app instalado via PWA, enquanto o admin tem acesso a um painel completo com histórico, gestão de veículos e geração de relatórios em PDF.
 
 **Frontend em produção:** `https://camara-municipal-medina-veiculos.vercel.app`  
 **API (Swagger):** `https://camaramunicipal-formulario-veiculo.onrender.com/swagger-ui/index.html`  
@@ -14,7 +14,8 @@ Interface web desenvolvida com Angular 21 para o sistema de gerenciamento de uso
 - **Tailwind CSS v4** — estilização utilitária via `@theme` no `styles.css`
 - **TypeScript** — tipagem estrita com interfaces espelhando os DTOs do backend
 - **Angular Signals** — gerenciamento de estado reativo (`signal`, `computed`)
-- **Angular PWA** (`@angular/pwa`) — service worker para instalação como app no celular
+- **Angular PWA** (`@angular/pwa`) — service worker para instalação como app no celular com atualização automática
+- **signature_pad 5.x** — captura de assinatura digital via canvas (mouse e touch)
 - **RxJS** — operadores reativos para chamadas HTTP e interceptors
 - **Vercel** — deploy do frontend em produção
 
@@ -33,7 +34,8 @@ src/app/
 │   ├── guards/         # AuthGuard (proteção das rotas /admin)
 │   └── models/         # Interfaces TypeScript espelhando os DTOs do backend
 ├── shared/
-│   └── components/     # Navbar, Footer, Toast, LoadingSpinner, ConfirmModal
+│   └── components/     # Navbar, Footer, Toast, LoadingSpinner, ConfirmModal,
+│                       # SignaturePad
 └── features/
     ├── public/
     │   ├── formulario/  # Página de formulário de uso (/formulario)
@@ -43,7 +45,7 @@ src/app/
         ├── layout/      # Sidebar compartilhada entre todas as páginas admin
         ├── dashboard/   # Painel com cards de resumo (/admin/dashboard)
         ├── veiculos/    # CRUD de veículos (/admin/veiculos)
-        ├── formularios/ # Listagem de formulários (/admin/formularios)
+        ├── formularios/ # Listagem de formulários com assinatura (/admin/formularios)
         ├── agendamentos/# Listagem e cancelamento de agendamentos (/admin/agendamentos)
         └── relatorios/  # Download de relatório PDF (/admin/relatorios)
 ```
@@ -54,12 +56,12 @@ src/app/
 
 | Funcionalidade | Público | Admin |
 |---|---|---|
-| Preencher formulário de uso | ✅ | ✅ |
+| Preencher formulário de uso (com assinatura) | ✅ | ✅ |
 | Criar agendamento | ✅ | ✅ |
 | Verificar disponibilidade | ✅ | ✅ |
-| Ver agendamentos futuros | ✅ | ✅ |
+| Ver agendamentos futuros ativos | ✅ | ✅ |
 | Cancelar agendamento | ❌ | ✅ |
-| Listar todos os formulários | ❌ | ✅ |
+| Listar todos os formulários (com assinatura) | ❌ | ✅ |
 | Listar todos os agendamentos | ❌ | ✅ |
 | Gerenciar veículos (CRUD) | ❌ | ✅ |
 | Gerar relatório PDF | ❌ | ✅ |
@@ -72,7 +74,9 @@ src/app/
 - Qualquer pessoa com o link acessa — sem autenticação
 - O link é distribuído apenas entre funcionários da câmara
 - O formulário de uso carrega automaticamente os veículos ativos
+- A **assinatura digital é obrigatória** — o formulário não é enviado sem ela
 - O agendamento exige verificação de disponibilidade antes de confirmar
+- Agendamentos futuros filtram automaticamente registros expirados e cancelados — apenas ativos com `dataFim > agora` são exibidos
 - Agendamentos futuros podem ser visualizados mas **não cancelados** — cancelamento é responsabilidade do admin
 - Se o backend demorar mais de 5 segundos para responder (cold start do Render), um banner amarelo é exibido orientando o usuário a aguardar
 
@@ -80,8 +84,24 @@ src/app/
 - Acesso via `/admin/login` — link discreto no rodapé de todas as páginas públicas
 - Autenticação via HTTP Basic — credenciais mantidas **em memória** durante a sessão
 - Recarregar a página encerra a sessão (intencional — sem localStorage por segurança)
+- Cold start tratado na tela de login — aviso aparece após 5 segundos sem resposta
 - Cancelamento de agendamentos disponível apenas aqui
-- Filtro de agendamentos cancelados — ocultos por padrão para não poluir a visualização
+- Agendamentos cancelados e expirados ocultos por padrão — toggles independentes para exibir cada grupo
+- Listagens ordenadas por **mais recente no topo** em formulários e agendamentos
+- Assinatura digital visível nos detalhes expansíveis de cada formulário
+
+---
+
+## Assinatura Digital
+
+O componente `SignaturePadComponent` encapsula o `signature_pad` e expõe um `EventEmitter` com o base64 da imagem:
+
+- Funciona com **mouse no desktop** e **toque no mobile**
+- Canvas ajustado automaticamente ao `devicePixelRatio` para nitidez em telas Retina
+- Traço em azul institucional (`rgb(30, 58, 138)`) sobre fundo branco
+- Botão "Limpar assinatura" aparece apenas após o primeiro traço
+- Após submit bem-sucedido, o canvas é limpo programaticamente via `ViewChild`
+- A assinatura é enviada como `data:image/png;base64,...` e armazenada em campo `TEXT` no banco
 
 ---
 
@@ -129,10 +149,10 @@ Acesse em `http://localhost:4200`.
 ### Comandos úteis
 
 ```bash
-ng serve                          # sobe o servidor de desenvolvimento
-ng build                          # build de desenvolvimento
+ng serve                             # sobe o servidor de desenvolvimento
+ng build                             # build de desenvolvimento
 ng build --configuration production  # build de produção
-ng test                           # roda os testes unitários
+ng test                              # roda os testes unitários
 ```
 
 ---
@@ -167,11 +187,12 @@ Não há variáveis de ambiente necessárias no Vercel — a `apiUrl` de produç
 
 ## PWA — Instalação como App
 
-O sistema suporta instalação como Progressive Web App em dispositivos móveis e desktop. Ao acessar pelo navegador, o usuário verá a opção de instalar o app na tela inicial.
+O sistema suporta instalação como Progressive Web App em dispositivos móveis e desktop.
 
 - **Nome do app:** CM Veículos
 - **Cor do tema:** Azul institucional (`#1e3a8a`)
 - **Modo de exibição:** Standalone (sem barra do navegador)
+- **Atualização automática:** quando uma nova versão é detectada, o usuário vê um `confirm` perguntando se deseja atualizar — sem necessidade de reinstalar o app
 - **Ícones:** Gerados automaticamente pelo `@angular/pwa` — substituir pelos ícones oficiais da câmara quando disponíveis
 
 ---
@@ -202,10 +223,13 @@ O sistema tem um único usuário admin com credenciais fixas. JWT seria overengi
 - **Standalone Components** — sem `NgModule`, cada componente declara suas próprias dependências nos `imports`
 - **Lazy loading em todas as rotas** — cada feature é carregada sob demanda, reduzindo o bundle inicial
 - **Credenciais admin em memória** — nunca persistidas em `localStorage` ou `sessionStorage` por segurança
-- **Cancelamento de agendamento apenas pelo admin** — decisão arquitetural para evitar que um funcionário cancele o agendamento de outro. Alternativa de ownership por usuário foi descartada por ser overengineering para o escopo
-- **`computed()` para filtros** — filtros client-side nas listagens admin recalculam automaticamente quando os signals de filtro mudam, sem nenhum `subscribe` manual
-- **Estratégia híbrida mobile/desktop nas tabelas admin** — tabelas tradicionais em `lg:block` e cards empilhados em `lg:hidden`, garantindo boa experiência em qualquer tela
-- **Cold start handler** — timer de 5 segundos detecta lentidão do Render e exibe banner informativo ao invés de deixar o usuário com spinner sem explicação
+- **Cancelamento de agendamento apenas pelo admin** — evita que um funcionário cancele o agendamento de outro; ownership por usuário foi descartado por ser overengineering para o escopo
+- **Assinatura via canvas (signature_pad)** — solução client-side sem dependência de API externa; base64 enviado diretamente ao backend e armazenado em campo TEXT
+- **`computed()` para filtros** — filtros client-side recalculam automaticamente quando os signals mudam, sem nenhum `subscribe` manual
+- **Filtro de expirados client-side** — agendamentos com `dataFim < agora` filtrados no frontend sem necessidade de novo status no backend
+- **Estratégia híbrida mobile/desktop nas tabelas admin** — tabelas tradicionais em `lg:block` e cards empilhados em `lg:hidden`
+- **Cold start handler** — timer de 5 segundos detecta lentidão do Render e exibe banner informativo tanto nas páginas públicas quanto no login admin
+- **PWA com atualização automática via SwUpdate** — `versionUpdates` detecta nova versão e exibe `confirm` para o usuário recarregar
 - **PDF download via Blob** — `URL.createObjectURL` + `<a>` programático dispara o download sem abrir nova aba
 
 ---
@@ -222,8 +246,8 @@ VeiculoRequestDTO   — nome, placa
 // Formulário
 FormularioRequestDTO  — requisitante, cargo, veiculoId, dataSaida,
                         dataRetornoPrevista, itinerario, justificativa,
-                        odometroSaida, observacao?
-FormularioResponseDTO — + id, veiculoNome, createdAt
+                        odometroSaida, observacao?, assinatura
+FormularioResponseDTO — + id, veiculoNome, assinatura?, createdAt
 
 // Agendamento
 AgendamentoRequestDTO  — requisitante, cargo, veiculoId, dataInicio, dataFim
@@ -243,3 +267,4 @@ Credenciais — username, password
 
 **Lucas Soares** — Desenvolvedor Backend Java/Spring Boot  
 [LinkedIn](https://www.linkedin.com/in/devlusket) · [Portfólio](https://lucas-soares-portfolio.vercel.app)
+---
